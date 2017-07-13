@@ -25,4 +25,15 @@ MAINTAINER Nicolas De Loof <nicolas.deloof@gmail.com>
 
 COPY jenkins-slave /usr/local/bin/jenkins-slave
 
+#Install additional software
+USER root
+RUN apt-get update
+RUN apt-get install -y php
+RUN apt-get install -y php-xml
+RUN apt-get install -y php-mbstring
+RUN apt-get install -y composer
+USER jenkins
+RUN composer global require "phpunit\phpunit"
+RUN composer global require "squizlabs/php_codesniffer=*"
+
 ENTRYPOINT ["jenkins-slave"]

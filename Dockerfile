@@ -21,19 +21,45 @@
 #  THE SOFTWARE.
 
 FROM jenkinsci/slave
-MAINTAINER Nicolas De Loof <nicolas.deloof@gmail.com>
+MAINTAINER BTower Labz <labz@btower.net>
 
 COPY jenkins-slave /usr/local/bin/jenkins-slave
 
 #Install additional software
 USER root
 RUN apt-get update
-RUN apt-get install -y php
-RUN apt-get install -y php-xml
-RUN apt-get install -y php-mbstring
-RUN apt-get install -y composer
+RUN uname -a
+RUN cat /etc/issue
+
+#Install basic tools
+RUN apt-get install -y curl git unzip lsof
+
+#Install basic php
+RUN apt-get install -y php5-common php5-cli
+
+#Install composer
+COPY composer-setup.php /tmp/composer-setup.php
+RUN php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'HASH OK'; } else { echo 'HASH FAIL'; unlink('/tmp/composer-setup.php'); } echo PHP_EOL;"
+RUN php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN rm /tmp/composer-setup.php
+RUN touch /home/jenkins/.composer
+RUN chown jenkins:jenkins /home/jenkins/.composer
+
+#Install php development tools
+RUN apt-get install -y \
+php-apigen \
+phpcpd \
+phpdox \
+phploc \
+phpmd \
+phpunit
+
 USER jenkins
-RUN composer global require "phpunit\phpunit"
+RUN pwd
+RUN ls -la
+RUN composer global require "phpunit/phpunit"
+RUN composer global require "phpunit/php-invoker"
+RUN composer global require "phpunit/dbunit"
 RUN composer global require "squizlabs/php_codesniffer=*"
 
 ENTRYPOINT ["jenkins-slave"]

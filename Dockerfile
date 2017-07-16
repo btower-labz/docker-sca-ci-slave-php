@@ -1,25 +1,25 @@
 # Jenkins PHP slave image for SCA project.
 # TODO: check https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#run
 
-FROM jenkinsci/slave
+FROM btowerlabz/docker-sca-ci-slave
 MAINTAINER BTower Labz <labz@btower.net>
 
-COPY jenkins-slave /usr/local/bin/jenkins-slave
+ARG LABELS=/home/jenkins/swarm-labels.cfg
 
 #Install additional software
 USER root
-RUN apt-get update
-RUN uname -a
-RUN cat /etc/issue
+RUN apt-get update && apt-get install -y apt-utils
 
 #Install basic tools
-RUN apt-get install -y curl git unzip lsof nano apt-utils
+RUN apt-get update && apt-get install -y curl git unzip lsof nano
 
-#Install basic php
-RUN apt-get install -y php5-common php5-cli php5-xsl
+#Install basic php environment
+RUN apt-cache search php
+RUN apt-get update && apt-get install -y php-common php-cli php-xsl php-mbstring
 
 # Install composer
-COPY composer-setup.php /tmp/composer-setup.php
+# COPY composer-setup.php /tmp/composer-setup.php
+RUN php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');"
 RUN php -r "if (hash_file('SHA384', '/tmp/composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'HASH OK'; } else { echo 'HASH FAIL'; unlink('/tmp/composer-setup.php'); } echo PHP_EOL;"
 RUN php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 RUN rm /tmp/composer-setup.php
@@ -27,46 +27,50 @@ RUN touch /home/jenkins/.composer
 RUN chown jenkins:jenkins /home/jenkins/.composer
 
 USER jenkins
-RUN php --version
 
 # Install PHPUnit
 # https://phpunit.de/
 RUN composer global require phpunit/phpunit
 RUN composer global require phpunit/php-invoker
 RUN composer global require phpunit/dbunit
+RUN printf " phpunit" >>${LABELS}
 
 # Install Code Sniffer
 # https://github.com/squizlabs/PHP_CodeSniffer
 RUN composer global require squizlabs/php_codesniffer=*
+RUN printf " phpcs" >>${LABELS}
 
 # Install PHPLoc
 # phploc is a tool for quickly measuring the size and analyzing the structure of a PHP project.
 # https://github.com/sebastianbergmann/phploc
 RUN composer global require phploc/phploc
+RUN printf " phpunit" >>${LABELS}
 
 # Install PHPDepend
 # PHP_Depend is an adaption of the established Java development tool JDepend. This tool shows you the quality of your design in the terms of extensibility, reusability and maintainability.
 # http://pdepend.org/
 RUN composer global require pdepend/pdepend:@stable
+RUN printf " phpdepend" >>${LABELS}
 
 # Install PHPMD
 # PHP Mess Detector
 # http://phpmd.org/
 RUN composer global require phpmd/phpmd:@stable
+RUN printf " phpmd" >>${LABELS}
 
 # Install phpcpd
 # Copy/Paste Detector (CPD) for PHP code. 
 # https://github.com/sebastianbergmann/phpcpd
 RUN composer global require --dev sebastian/phpcpd
+RUN printf " phpcpd" >>${LABELS}
 
 # Install phpdox
 # PHP Documentation Generator
 # http://phpdox.de/
 RUN composer global require theseer/phpdox
+RUN printf " phpdox" >>${LABELS}
 
-# Install API Gen
-# PHP 7.1 ready Smart and Simple Documentation for your PHP project 
-# https://github.com/ApiGen/ApiGen
-# RUN composer global require apigen/apigen
-
-ENTRYPOINT ["jenkins-slave"]
+RUN uname -a
+RUN cat /etc/issue
+RUN php --version
+RUN cat ${LABELS}

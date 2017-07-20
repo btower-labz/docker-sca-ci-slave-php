@@ -28,6 +28,9 @@ RUN chown jenkins:jenkins /home/jenkins/.composer
 
 USER jenkins
 
+# Set php label
+RUN printf " php" >>${LABELS}
+
 # Install PHPUnit
 # https://phpunit.de/
 RUN composer global require phpunit/phpunit

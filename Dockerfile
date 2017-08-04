@@ -29,6 +29,9 @@ RUN chown jenkins:jenkins /home/jenkins/.composer
 
 USER jenkins
 
+RUN mkdir -p /home/jenkins/.ssh
+RUN touch /home/jenkins/.ssh/known_hosts
+
 # Set php label
 RUN printf " php" >>${LABELS}
 

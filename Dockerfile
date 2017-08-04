@@ -57,7 +57,7 @@ RUN printf " phpunit" >>${LABELS}
 # PHP_Depend is an adaption of the established Java development tool JDepend. This tool shows you the quality of your design in the terms of extensibility, reusability and maintainability.
 # http://pdepend.org/
 RUN composer global require pdepend/pdepend:@stable
-RUN printf " phpdepend" >>${LABELS}
+RUN printf " pdepend" >>${LABELS}
 
 # Install PHPMD
 # PHP Mess Detector

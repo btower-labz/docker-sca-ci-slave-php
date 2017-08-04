@@ -6,6 +6,8 @@ MAINTAINER BTower Labz <labz@btower.net>
 
 ARG LABELS=/home/jenkins/swarm-labels.cfg
 
+ENV PATH="/home/jenkins/.composer/vendor/bin:${PATH}"
+
 #Install additional software
 USER root
 RUN apt-get update && apt-get install -y apt-utils
@@ -14,8 +16,7 @@ RUN apt-get update && apt-get install -y apt-utils
 RUN apt-get update && apt-get install -y curl git unzip lsof nano
 
 #Install basic php environment
-RUN apt-cache search php
-RUN apt-get update && apt-get install -y php-common php-cli php-xsl php-mbstring
+RUN apt-get update && apt-get install -y php-common php-cli php-xsl php-mbstring php-xdebug
 
 # Install composer
 # COPY composer-setup.php /tmp/composer-setup.php

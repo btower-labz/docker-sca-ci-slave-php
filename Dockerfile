@@ -51,7 +51,7 @@ RUN printf " phpcs" >>${LABELS}
 # phploc is a tool for quickly measuring the size and analyzing the structure of a PHP project.
 # https://github.com/sebastianbergmann/phploc
 RUN composer global require phploc/phploc
-RUN printf " phpunit" >>${LABELS}
+RUN printf " phploc" >>${LABELS}
 
 # Install PHPDepend
 # PHP_Depend is an adaption of the established Java development tool JDepend. This tool shows you the quality of your design in the terms of extensibility, reusability and maintainability.

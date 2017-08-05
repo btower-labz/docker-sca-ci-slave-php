@@ -81,3 +81,9 @@ RUN uname -a
 RUN cat /etc/issue
 RUN php --version
 RUN cat ${LABELS}
+
+# XML STARLET FOR PHPMD WORK
+USER root
+RUN apt-get update && apt-get install -y xmlstarlet
+USER jenkins
+RUN printf " xmlstarlet" >>${LABELS}

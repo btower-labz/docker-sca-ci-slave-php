@@ -1,5 +1,5 @@
 # Jenkins PHP slave image for SCA project.
-# TODO: check https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices/#run
+# TODO: check https://docs.docker.com/engine/userguide/eng-image/dockerfile_best-practices
 
 FROM btowerlabz/docker-sca-ci-slave
 MAINTAINER btower-labz <labz@btower.net>
@@ -34,8 +34,3 @@ RUN printf " php phpunit phpcs phploc pdepend phpmd phpcpd phpdox phpstan xmlsta
 
 # Send some info to build log
 RUN uname -a; cat /etc/issue; php --version; php --ini; php -m; cat ${LABELS}
-
-USER root
-RUN echo 'debconf debconf/frontend select Dialog' | debconf-set-selections
-
-USER jenkins

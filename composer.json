@@ -1,0 +1,17 @@
+{
+    "require": {
+        "phpunit/phpunit": "^6.3",
+        "phpunit/php-invoker": "^1.1",
+        "phpunit/dbunit": "^3.0",
+        "squizlabs/php_codesniffer": "*",
+        "phploc/phploc": "^4.0",
+        "pdepend/pdepend": "@stable",
+        "phpmd/phpmd": "@stable",
+        "theseer/phpdox": "^0.10.1",
+        "phpstan/phpstan": "^0.8.0",
+        "phpstan/phpstan-doctrine": "^0.8.0",
+        "phpstan/phpstan-nette": "^0.8.1",
+        "phpstan/phpstan-dibi": "^0.8.0",
+	"sebastian/phpcpd": "^3.0"
+    }
+}
